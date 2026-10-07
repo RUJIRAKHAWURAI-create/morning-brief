@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Morning Brief กลุ่มงานการพยาบาลชุมชน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F5F3; --surface:#FFFFFF; --ink:#1D2B2A; --muted:#5E6E6B; --line:#D5DFDB;
+  --primary:#1F6B5A; --primary-ink:#FFFFFF; --primary-soft:#E2EFEA; --sun:#F2C14E; --sun-ink:#4A3700; --danger:#B5473A;
+  --field:#F8FAF9;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#121917; --surface:#1B2422; --ink:#E6EEEB; --muted:#9AABA6; --line:#2C3A37;
+    --primary:#5CB89F; --primary-ink:#0D1A16; --primary-soft:#1F3A33; --sun:#E7B740; --sun-ink:#2A1F00; --danger:#E07A6C;
+    --field:#162020; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121917; --surface:#1B2422; --ink:#E6EEEB; --muted:#9AABA6; --line:#2C3A37;
+  --primary:#5CB89F; --primary-ink:#0D1A16; --primary-soft:#1F3A33; --sun:#E7B740; --sun-ink:#2A1F00; --danger:#E07A6C;
+  --field:#162020; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Sarabun","Thonburi","Leelawadee UI",system-ui,sans-serif;font-size:17px;line-height:1.55;-webkit-text-size-adjust:100%}
+h1,h2,h3,summary,.btn,.seg button,.badge{font-family:"Anuphan","Sarabun",system-ui,sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:16px 14px 120px}
+header.top{padding:8px 4px 18px;border-bottom:4px solid var(--sun);margin-bottom:18px}
+.kicker{color:var(--muted);font-size:15px;margin:0}
+h1{font-size:30px;line-height:1.2;margin:2px 0 10px;font-weight:700;letter-spacing:-.2px}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.meta label{font-size:14px;color:var(--muted);display:block}
+input,textarea,select{font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:10px;padding:9px 11px;width:100%;max-width:100%}
+textarea{resize:vertical;min-height:44px;line-height:1.5}
+input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+section.block{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 14px;margin:0 0 16px}
+h2{font-size:20px;margin:0 0 4px;font-weight:700}
+.hint{color:var(--muted);font-size:14px;margin:0 0 12px}
+.field{margin:0 0 12px}
+.field>span{display:block;font-weight:600;font-size:15px;margin:0 0 4px}
+.att{display:flex;flex-direction:column;gap:2px}
+.att-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--line)}
+.att-row:last-child{border-bottom:0}
+.att-name{flex:1;min-width:0}
+.att-name small{color:var(--muted);display:block;font-size:13px;line-height:1.2}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;flex-shrink:0}
+.seg button{border:0;background:transparent;color:var(--muted);padding:6px 11px;font-size:14px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--primary);color:var(--primary-ink)}
+.seg button[data-v="ลา"][aria-pressed="true"]{background:var(--danger);color:#fff}
+.seg button[data-v="ราชการ"][aria-pressed="true"]{background:var(--sun);color:var(--sun-ink)}
+details.person{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin:0 0 10px}
+details.person[open]{border-color:var(--primary)}
+details.person.away{opacity:.72}
+summary{list-style:none;cursor:pointer;padding:13px 14px;display:flex;align-items:center;gap:10px;font-weight:600;font-size:17px}
+summary::-webkit-details-marker{display:none}
+summary .nm{flex:1;min-width:0}
+summary .chev{transition:transform .15s;color:var(--muted)}
+details[open] summary .chev{transform:rotate(90deg)}
+@media (prefers-reduced-motion:reduce){summary .chev{transition:none}}
+.badge{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--primary-soft);color:var(--primary);white-space:nowrap}
+.badge.done{background:var(--sun);color:var(--sun-ink)}
+.badge.off{background:transparent;color:var(--danger);border:1px solid var(--danger)}
+.pbody{padding:2px 14px 14px;border-top:1px solid var(--line)}
+.cases{margin:6px 0 12px}
+.case{border-left:4px solid var(--primary);background:var(--field);border-radius:4px 12px 12px 4px;padding:10px 10px 4px 12px;margin:0 0 10px}
+.case-head{display:flex;justify-content:space-between;align-items:center;margin:0 0 8px;font-weight:600}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 11px;font-size:14px;cursor:pointer;min-height:34px;font-family:inherit}
+.chips button[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:var(--primary-ink)}
+.btn{border:1px solid var(--primary);background:transparent;color:var(--primary);border-radius:12px;padding:9px 14px;font-size:15px;font-weight:600;cursor:pointer;min-height:42px}
+.btn.solid{background:var(--primary);color:var(--primary-ink)}
+.btn.ghost{border-color:var(--line);color:var(--muted)}
+.btn.small{padding:4px 10px;min-height:32px;font-size:14px}
+.btn.danger{border-color:var(--danger);color:var(--danger)}
+.btn.danger.solid-danger{background:var(--danger);color:#fff}
+.extra-topic{border:1px dashed var(--line);border-radius:12px;padding:10px;margin:0 0 10px}
+.row-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));z-index:5}
+.bar-in{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.stats{flex:1;display:flex;gap:14px;font-size:14px;color:var(--muted);line-height:1.2}
+.stats b{display:block;font-family:"Anuphan",sans-serif;font-size:22px;color:var(--ink)}
+dialog{border:0;border-radius:18px;padding:0;width:min(680px,94vw);max-height:90vh;background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(10,20,18,.55)}
+.dlg{display:flex;flex-direction:column;max-height:90vh}
+.dlg-h{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.dlg-b{padding:12px 16px;overflow:auto;flex:1}
+.dlg-b textarea{min-height:52vh;font-size:15px;white-space:pre-wrap}
+.dlg-f{padding:12px 16px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:15px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+.toast.show{opacity:1}
+.settings{display:flex;gap:16px;flex-wrap:wrap;align-items:center;font-size:15px}
+.settings label{display:flex;gap:6px;align-items:center}
+.settings input[type=checkbox]{width:20px;height:20px}
+.field>span.lbl{display:flex;justify-content:space-between;align-items:flex-end;gap:8px}
+.mic{border:1px solid var(--line);background:var(--surface);color:var(--primary);border-radius:999px;padding:2px 10px;font-size:13px;font-weight:600;cursor:pointer;min-height:30px;font-family:"Anuphan",sans-serif;flex-shrink:0}
+.mic.on{background:var(--danger);border-color:var(--danger);color:#fff;animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.6}}
+.howto{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;margin:0 0 16px;font-weight:400}
+.howto[open]{border-color:var(--sun)}
+.howto summary{padding:0;font-size:17px}
+.howto summary::before{content:"›";color:var(--muted);transition:transform .15s;display:inline-block}
+.howto[open] summary::before{transform:rotate(90deg)}
+.howto ol{margin:10px 0 0;padding-left:22px}
+.howto li{margin:0 0 6px}
+html:not(.hosted) .web-only,.hosted .local-only,html:not(.web) .link-only{display:none!important}
+.rec-time{font-family:"Anuphan",sans-serif;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--muted)}
+.rec-time.on{color:var(--danger)}
+.btn.rec-on{background:var(--danger);border-color:var(--danger);color:#fff}
+.clip{display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:10px}
+.clip audio{width:100%}
+.clip-h{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
+.rec-pill{display:none;align-items:center;gap:6px;border:0;background:var(--danger);color:#fff;border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600;cursor:pointer;font-family:"Anuphan",sans-serif;min-height:36px}
+.rec-pill.show{display:inline-flex}
+@media (prefers-reduced-motion:reduce){.mic.on{animation:none}}
+@media (max-width:420px){.meta,.grid2{grid-template-columns:1fr}h1{font-size:26px}.seg button{padding:6px 9px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <p class="kicker">Morning Brief กลุ่มงานการพยาบาลชุมชน</p>
+    <h1 id="headline">เช้าวันนี้</h1>
+    <div class="meta">
+      <div><label for="date">วันที่</label><input type="date" id="date"></div>
+      <div><label for="time">เวลาเริ่ม</label><input type="time" id="time"></div>
+      <div style="grid-column:1/-1"><label for="recorder">ผู้บันทึกวันนี้</label><select id="recorder"></select></div>
+    </div>
+  </header>
+
+  <details class="block howto">
+    <summary>วิธีใช้ (อ่านครั้งแรก)</summary>
+    <ol>
+      <li class="link-only"><b>เปิดลิงก์ด้วย Safari (iPhone) หรือ Chrome (Android)</b> อย่าเปิดในไลน์ เพราะข้อมูลที่กรอกอาจหาย แล้วเพิ่มไว้ที่หน้าจอโฮม จะได้เปิดทางเดียวกันทุกวัน</li>
+      <li>เลือก <b>ผู้บันทึกวันนี้</b> และเช็กวันที่ ถ้ามีข้อมูลของวันก่อนค้าง กด "ล้างข้อมูล เริ่มรายงานวันใหม่" ที่ส่วนตั้งค่าล่างสุด</li>
+      <li class="local-only">ถ้าจะอัดเสียง แจ้งทีมก่อน แล้วกด <b>● เริ่มอัดเสียง</b> กดหยุดเมื่อประชุมจบ ไฟล์เสียงจะลงโฟลเดอร์ Downloads (iPhone ดูในแอป ไฟล์)</li>
+      <li class="web-only">ถ้าจะอัดเสียง แจ้งทีมก่อน แล้วใช้แอปอัดเสียงของมือถือ (iPhone: <b>บันทึกเสียง/Voice Memos</b>, Android: <b>เครื่องบันทึกเสียง</b>) อัดไว้ฟังทวน</li>
+      <li class="local-only">กรอก การมาปฏิบัติงาน → ภาพรวมทีม → รายคน (แตะชื่อเพื่อเปิด) ช่องไหนพูดแทนพิมพ์ได้ กด <b>🎤 พูด</b></li>
+      <li class="web-only">กรอก การมาปฏิบัติงาน → ภาพรวมทีม → รายคน (แตะชื่อเพื่อเปิด) ไม่อยากพิมพ์ แตะในช่องแล้วกด <b>ไมค์บนแป้นพิมพ์มือถือ</b> พูดภาษาไทยแทนได้</li>
+      <li>ระบุผู้ป่วยด้วย <b>ชื่อย่อ + HN</b> เท่านั้น ห้ามใช้ชื่อเต็ม</li>
+      <li>ประชุมจบ กด <b>สร้างข้อความส่งไลน์</b> อ่านทวน แล้วกด คัดลอก ไปวางในกลุ่มไลน์ภายใน 1 ชั่วโมง</li>
+    </ol>
+    <p class="hint" style="margin:8px 0 0">ข้อมูลที่กรอกเก็บในเครื่องของผู้กรอกเท่านั้น ไม่ได้ส่งไปที่ไหนจนกว่าจะวางในไลน์เอง ปิดหน้าแล้วกลับมากรอกต่อได้</p>
+  </details>
+
+  <section class="block local-only" aria-labelledby="rec-h">
+    <h2 id="rec-h">อัดเสียงประชุม</h2>
+    <p class="hint">อัดไว้ฟังทวนตอนเขียนรายงาน กดหยุดแล้วไฟล์เสียงจะบันทึกลงโฟลเดอร์ Downloads ของเครื่องนี้ ไม่ได้ส่งไปที่ไหน แจ้งทีมก่อนเริ่มอัดทุกครั้ง</p>
+    <div class="row-actions"><button class="btn solid" id="rec-btn" type="button">● เริ่มอัดเสียง</button><span class="rec-time" id="rec-time" aria-live="off">00:00</span></div>
+    <div id="rec-list"></div>
+    <p class="hint" id="dict-hint" style="margin:12px 0 0">ทุกช่องมีปุ่ม <b>🎤 พูด</b> กดแล้วพูดภาษาไทย ระบบจะพิมพ์ให้ กดอีกครั้งเพื่อหยุด (ต้องต่ออินเทอร์เน็ต)</p>
+  </section>
+
+  <section class="block" aria-labelledby="att-h">
+    <h2 id="att-h">การมาปฏิบัติงาน</h2>
+    <p class="hint">ทุกคนตั้งต้นเป็น "มา" แตะเปลี่ยนเฉพาะคนที่ลาหรือไปราชการ</p>
+    <div class="att" id="att"></div>
+  </section>
+
+  <section class="block" aria-labelledby="team-h">
+    <h2 id="team-h">ภาพรวมทีม</h2>
+    <p class="hint">เรื่องของกลุ่มงานทั้งหมด แยกจากรายงานรายบุคคล</p>
+    <label class="field"><span>เรื่องจากหัวหน้า / ภาพรวมกลุ่มงาน</span><textarea data-team="chief" rows="2"></textarea></label>
+    <label class="field"><span>ปัญหาของทีม</span><textarea data-team="problems" rows="2"></textarea></label>
+    <label class="field"><span>แนวทางแก้ไข / ข้อตกลงร่วมกัน</span><textarea data-team="agree" rows="2"></textarea></label>
+    <div id="extras"></div>
+    <label class="field"><span>อื่น ๆ ของทีม</span><textarea data-team="other" rows="2"></textarea></label>
+    <button class="btn small" id="add-topic" type="button">+ เพิ่มหัวข้อทีม</button>
+  </section>
+
+  <h2 style="margin:6px 4px 10px">รายงานรายบุคคล</h2>
+  <div id="people"></div>
+
+  <section class="block" aria-labelledby="set-h" style="margin-top:20px">
+    <h2 id="set-h">ตั้งค่า</h2>
+    <div class="settings">
+      <label><input type="checkbox" id="thai"> ใช้เลขไทยในข้อความที่ส่ง</label>
+    </div>
+    <div class="row-actions" style="margin-top:12px">
+      <button class="btn danger small" id="reset" type="button">ล้างข้อมูล เริ่มรายงานวันใหม่</button>
+    </div>
+    <p class="hint" style="margin-top:8px">ข้อมูลที่กรอกจะบันทึกไว้ในเครื่องนี้อัตโนมัติ ปิดหน้าแล้วกลับมากรอกต่อได้</p>
+  </section>
+</div>
+
+<div class="bar">
+  <div class="bar-in">
+    <div class="stats">
+      <div><b id="s-att">9/9</b>มาปฏิบัติงาน</div>
+      <div><b id="s-pt">0</b>ผู้ป่วยรวม</div>
+    </div>
+    <button class="rec-pill" id="rec-pill" type="button" aria-label="หยุดอัดเสียง">■ <span id="rec-pill-t">00:00</span></button>
+    <button class="btn solid" id="open" type="button">สร้างข้อความส่งไลน์</button>
+  </div>
+</div>
+
+<dialog id="dlg" aria-labelledby="dlg-t">
+  <div class="dlg">
+    <div class="dlg-h"><h2 id="dlg-t" style="margin:0">ข้อความสำหรับส่งกลุ่มไลน์</h2><button class="btn ghost small" id="close" type="button">ปิด</button></div>
+    <div class="dlg-b"><p class="hint">แก้ข้อความในกล่องนี้ได้ก่อนคัดลอก</p><textarea id="out" aria-label="ข้อความรายงาน"></textarea></div>
+    <div class="dlg-f">
+      <button class="btn" id="share" type="button" hidden>แชร์</button>
+      <button class="btn solid" id="copy" type="button">คัดลอกข้อความ</button>
+    </div>
+  </div>
+</dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+let HOSTED=false;try{HOSTED=window.self!==window.top||!!(window.claude&&window.claude.use);}catch(e){HOSTED=true;}
+if(HOSTED)document.documentElement.classList.add('hosted');
+if(/^https?:$/.test(location.protocol))document.documentElement.classList.add('web');
+const TEAM=[
+ {id:'kanchana',name:'คุณกาญจนา',role:'หัวหน้ากลุ่มงาน'},
+ {id:'sirinthip',name:'คุณศิรินทิพย์',role:'พยาบาล'},
+ {id:'anutsara',name:'คุณอนุสสรา',role:'พยาบาล'},
+ {id:'rujidaree',name:'คุณรุจิดารีย์',role:'พยาบาล'},
+ {id:'rujira',name:'คุณรุจิรา',role:'พยาบาล'},
+ {id:'apichaya',name:'คุณอภิชญา',role:'พยาบาล'},
+ {id:'chanitkan',name:'คุณชนิษฐกานต์',role:'พยาบาล'},
+ {id:'rattikan',name:'คุณรัฏติกาล',role:'พยาบาล'},
+ {id:'chanikan',name:'คุณชนิกานต์',role:'พยาบาล'}
+];
+const GROUPS=['Home Ward','Palliative','NCD','FCT','อื่น ๆ'];
+const STATUS=['มา','ลา','ราชการ'];
+const KEY='mb-community-nursing-v1';
+const $=s=>document.querySelector(s);
+
+function today(){const d=new Date();const z=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate());}
+function blankPerson(){return {status:'มา',today:'',cases:[],problems:'',ideas:'',other:''};}
+function blank(){const p={};TEAM.forEach(t=>p[t.id]=blankPerson());
+ return {date:today(),time:'08:30',recorder:'',thai:false,
+  team:{chief:'',problems:'',agree:'',other:'',extras:[]},people:p};}
+let S;
+try{const raw=localStorage.getItem(KEY);S=raw?JSON.parse(raw):null;}catch(e){S=null;}
+if(!S||!S.people){S=blank();}
+TEAM.forEach(t=>{if(!S.people[t.id])S.people[t.id]=blankPerson();});
+let saveT;
+function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}},250);}
+
+function thaiDate(iso){if(!iso)return '';const [y,m,d]=iso.split('-').map(Number);const dt=new Date(y,m-1,d);
+ const W=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+ const M=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+ return 'วัน'+W[dt.getDay()]+'ที่ '+d+' '+M[m-1]+' '+(y+543);}
+function headline(){const t=thaiDate(S.date);$('#headline').textContent=t?('เช้า'+t.replace(/ \d{4}$/,'')):'เช้าวันนี้';}
+
+function autoGrow(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight+2,420)+'px';}
+function ta(val,rows,onIn,ph){const t=document.createElement('textarea');t.rows=rows||2;t.value=val||'';if(ph)t.placeholder=ph;
+ t.addEventListener('input',()=>{onIn(t.value);autoGrow(t);save();refresh();});setTimeout(()=>autoGrow(t));return t;}
+function fld(label,el){const l=document.createElement('label');l.className='field';const s=document.createElement('span');s.textContent=label;l.append(s,el);
+ if(el.tagName==='TEXTAREA')addMic(l,s,el);return l;}
+
+/* voice typing: mic button on every textarea */
+const SR=HOSTED?null:(window.SpeechRecognition||window.webkitSpeechRecognition);
+let rec=null,recEl=null,recBtn=null,uid=0;
+function addMic(l,s,el){if(!el.id)el.id='f'+(++uid);l.htmlFor=el.id;if(!SR)return;
+ s.classList.add('lbl');const t=document.createElement('span');t.textContent=s.textContent;s.textContent='';
+ const b=document.createElement('button');b.type='button';b.className='mic';b.textContent='🎤 พูด';b.setAttribute('aria-label','พูดเพื่อพิมพ์ช่อง '+t.textContent);
+ b.onclick=e=>{e.preventDefault();toggleDictation(el,b);};
+ el.addEventListener('keydown',()=>{if(recEl===el)stopDictation();});
+ s.append(t,b);}
+function stopDictation(){const r=rec;rec=null;if(r){r.onend=null;try{r.stop();}catch(e){}}
+ if(recBtn){recBtn.classList.remove('on');recBtn.textContent='🎤 พูด';}recEl=recBtn=null;}
+function toggleDictation(el,b){const same=recEl===el;stopDictation();if(same)return;
+ const r=new SR();r.lang='th-TH';r.continuous=true;r.interimResults=true;
+ rec=r;recEl=el;recBtn=b;b.classList.add('on');b.textContent='■ หยุด';
+ const base=el.value;const sep=base&&!/\s$/.test(base)?' ':'';let fin='';
+ r.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const x=e.results[i];if(x.isFinal)fin+=x[0].transcript;else interim+=x[0].transcript;}
+  el.value=base+sep+fin+interim;el.dispatchEvent(new Event('input'));};
+ r.onerror=e=>{if(e.error==='no-speech'||e.error==='aborted')return;
+  toast(e.error==='not-allowed'||e.error==='service-not-allowed'?'ยังไม่ได้อนุญาตให้ใช้ไมโครโฟน':e.error==='network'?'พิมพ์ด้วยเสียงต้องต่ออินเทอร์เน็ต':'พิมพ์ด้วยเสียงขัดข้อง ลองกดใหม่');
+  if(rec===r)stopDictation();};
+ r.onend=()=>{if(rec===r){try{r.start();}catch(_){stopDictation();}}};/* browser stops after silence: keep listening until user taps stop */
+ try{r.start();}catch(e){stopDictation();toast('เปิดไมโครโฟนไม่สำเร็จ');}}
+
+/* meta */
+$('#date').value=S.date;$('#time').value=S.time;fillRecorder();$('#thai').checked=!!S.thai;
+$('#date').addEventListener('input',e=>{S.date=e.target.value;headline();save();});
+$('#time').addEventListener('input',e=>{S.time=e.target.value;save();});
+$('#recorder').addEventListener('change',e=>{S.recorder=e.target.value;save();});
+function fillRecorder(){const sel=$('#recorder');sel.innerHTML='';
+ const names=TEAM.map(t=>t.name);if(S.recorder&&!names.includes(S.recorder))names.push(S.recorder);
+ [['','— เลือกชื่อผู้บันทึก —']].concat(names.map(n=>[n,n])).forEach(([v,l])=>{const o=document.createElement('option');o.value=v;o.textContent=l;sel.append(o);});
+ sel.value=S.recorder||'';}
+$('#thai').addEventListener('change',e=>{S.thai=e.target.checked;save();});
+
+/* team */
+document.querySelectorAll('[data-team]').forEach(t=>{t.value=S.team[t.dataset.team]||'';setTimeout(()=>autoGrow(t));
+ t.addEventListener('input',()=>{S.team[t.dataset.team]=t.value;autoGrow(t);save();});
+ const l=t.closest('label');addMic(l,l.querySelector('span'),t);});
+if(!SR)$('#dict-hint').hidden=true;
+
+/* meeting audio recorder (file goes to Downloads, never stored in the page) */
+let mr=null,chunks=[],recStart=0,recTick=null,starting=false,wake=null;
+function mmss(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function pickMime(){if(!window.MediaRecorder)return '';const c=['audio/mp4;codecs=mp4a.40.2','audio/mp4','audio/webm;codecs=opus','audio/webm','audio/ogg'];/* m4a first: seekable, opens in QuickTime */
+ for(const m of c){try{if(MediaRecorder.isTypeSupported(m))return m;}catch(e){}}return '';}
+function recUI(on){const b=$('#rec-btn');b.textContent=on?'■ หยุดอัดและบันทึกไฟล์':'● เริ่มอัดเสียง';b.classList.toggle('rec-on',on);
+ $('#rec-time').classList.toggle('on',on);$('#rec-pill').classList.toggle('show',on);}
+async function startRec(){if(starting)return;if(!navigator.mediaDevices||!window.MediaRecorder){toast('เบราว์เซอร์นี้อัดเสียงไม่ได้ ลองเปิดด้วย Chrome หรือ Safari');return;}
+ let stream;starting=true;try{stream=await navigator.mediaDevices.getUserMedia({audio:true});}catch(e){starting=false;toast(e&&e.name==='NotFoundError'?'ไม่พบไมโครโฟนในเครื่องนี้':'ยังไม่ได้อนุญาตให้ใช้ไมโครโฟน');return;}
+ starting=false;
+ const mime=pickMime();try{mr=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);}catch(e){mr=new MediaRecorder(stream);}
+ chunks=[];mr.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};
+ const m=mr;m.onstop=()=>{stream.getTracks().forEach(t=>t.stop());saveClip(new Blob(chunks,{type:m.mimeType||mime||'audio/webm'}),Date.now()-recStart);if(mr===m)mr=null;};
+ stream.getAudioTracks().forEach(t=>t.addEventListener('ended',()=>{if(mr===m){toast('ไมโครโฟนหลุด บันทึกเสียงที่อัดได้แล้ว');stopRec();}}));
+ mr.start(1000);recStart=Date.now();recUI(true);
+ try{if(navigator.wakeLock)navigator.wakeLock.request('screen').then(w=>wake=w).catch(()=>{});}catch(e){}
+ recTick=setInterval(()=>{const t=mmss(Date.now()-recStart);$('#rec-time').textContent=t;$('#rec-pill-t').textContent=t;},500);}
+function stopRec(){if(mr&&mr.state!=='inactive')mr.stop();clearInterval(recTick);recUI(false);
+ if(wake){wake.release().catch(()=>{});wake=null;}}
+function saveClip(blob,dur){if(!blob.size){toast('ไม่ได้เสียงเลย ลองตรวจไมโครโฟนแล้วอัดใหม่');return;}
+ const ext=/mp4/.test(blob.type)?'m4a':/ogg/.test(blob.type)?'ogg':'webm';
+ const d=new Date();const z=n=>String(n).padStart(2,'0');
+ const name='morning-brief_'+(S.date||today())+'_'+z(d.getHours())+z(d.getMinutes())+'.'+ext;
+ const url=URL.createObjectURL(blob);
+ const box=document.createElement('div');box.className='clip';
+ const h=document.createElement('div');h.className='clip-h';const tt=document.createElement('span');tt.textContent=name+' · '+mmss(dur);
+ const a=document.createElement('a');a.href=url;a.download=name;a.textContent='บันทึกไฟล์อีกครั้ง';a.className='btn small';a.style.textDecoration='none';
+ h.append(tt,a);const au=document.createElement('audio');au.controls=true;au.src=url;box.append(h,au);$('#rec-list').prepend(box);
+ a.click();toast('บันทึกไฟล์เสียงลงโฟลเดอร์ Downloads แล้ว');}
+$('#rec-btn').onclick=()=>{mr?stopRec():startRec();};
+$('#rec-pill').onclick=stopRec;
+window.addEventListener('beforeunload',e=>{if(mr){e.preventDefault();e.returnValue='';}});
+function renderExtras(){const box=$('#extras');box.innerHTML='';
+ S.team.extras.forEach((x,i)=>{const d=document.createElement('div');d.className='extra-topic';
+  const ti=document.createElement('input');ti.value=x.title;ti.placeholder='ชื่อหัวข้อ เช่น แผนเยี่ยมบ้านร่วมกับ รพ.สต.';
+  ti.addEventListener('input',()=>{x.title=ti.value;save();});
+  const body=ta(x.detail,2,v=>x.detail=v,'รายละเอียด');body.style.marginTop='8px';
+  const rm=document.createElement('button');rm.type='button';rm.className='btn ghost small';rm.textContent='ลบหัวข้อนี้';rm.style.marginTop='8px';
+  rm.onclick=()=>{S.team.extras.splice(i,1);save();renderExtras();};
+  d.append(ti,body,rm);box.append(d);});}
+$('#add-topic').onclick=()=>{S.team.extras.push({title:'',detail:''});save();renderExtras();
+ const ins=$('#extras').querySelectorAll('input');if(ins.length)ins[ins.length-1].focus();};
+renderExtras();
+
+/* attendance */
+function renderAtt(){const box=$('#att');box.innerHTML='';
+ TEAM.forEach(t=>{const r=document.createElement('div');r.className='att-row';
+  const n=document.createElement('div');n.className='att-name';n.innerHTML='';const nm=document.createElement('span');nm.textContent=t.name;
+  const sm=document.createElement('small');sm.textContent=t.role;n.append(nm,sm);
+  const seg=document.createElement('div');seg.className='seg';seg.setAttribute('role','group');seg.setAttribute('aria-label','สถานะ '+t.name);
+  STATUS.forEach(v=>{const b=document.createElement('button');b.type='button';b.dataset.v=v;b.textContent=v;
+   b.setAttribute('aria-pressed',S.people[t.id].status===v);
+   b.onclick=()=>{S.people[t.id].status=v;save();renderAtt();renderPeopleHeads();refresh();};seg.append(b);});
+  r.append(n,seg);box.append(r);});}
+
+/* people */
+const heads={};
+function personFilled(p){return !!(p.today||p.problems||p.ideas||p.other||p.cases.length);}
+function renderPeopleHeads(){TEAM.forEach(t=>{const h=heads[t.id];if(!h)return;const p=S.people[t.id];
+ h.det.classList.toggle('away',p.status!=='มา');
+ h.badges.innerHTML='';
+ if(p.status!=='มา'){const b=document.createElement('span');b.className='badge off';b.textContent=p.status;h.badges.append(b);}
+ if(p.cases.length){const b=document.createElement('span');b.className='badge';b.textContent='ผู้ป่วย '+p.cases.length;h.badges.append(b);}
+ if(personFilled(p)){const b=document.createElement('span');b.className='badge done';b.textContent='กรอกแล้ว';h.badges.append(b);}});}
+
+function ownerSelect(c,defName){const s=document.createElement('select');
+ const opts=TEAM.map(t=>t.name).concat(['ร่วมกันทั้งทีม']);
+ if(!c.owner)c.owner=defName;
+ opts.forEach(o=>{const op=document.createElement('option');op.value=o;op.textContent=o;if(o===c.owner)op.selected=true;s.append(op);});
+ s.addEventListener('change',()=>{c.owner=s.value;save();});return s;}
+
+function renderCases(t,box){const p=S.people[t.id];box.innerHTML='';
+ p.cases.forEach((c,i)=>{const d=document.createElement('div');d.className='case';
+  const hd=document.createElement('div');hd.className='case-head';const ht=document.createElement('span');ht.textContent='ผู้ป่วยรายที่ '+(i+1);
+  const rm=document.createElement('button');rm.type='button';rm.className='btn ghost small';rm.textContent='ลบ';
+  rm.onclick=()=>{p.cases.splice(i,1);save();renderCases(t,box);renderPeopleHeads();refresh();};hd.append(ht,rm);
+  const id=document.createElement('input');id.value=c.pt||'';id.placeholder='เช่น น.ส. ก.ข. HN 123456';
+  id.addEventListener('input',()=>{c.pt=id.value;save();});
+  const chips=document.createElement('div');chips.className='chips';
+  GROUPS.forEach(g=>{const b=document.createElement('button');b.type='button';b.textContent=g;b.setAttribute('aria-pressed',c.group===g);
+   b.onclick=()=>{c.group=(c.group===g?'':g);save();chips.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x.textContent===c.group));};chips.append(b);});
+  const g2=document.createElement('div');g2.className='grid2';
+  g2.append(fld('ผู้ป่วย (ชื่อย่อ / HN)',id),fld('ผู้รับผิดชอบเคส',ownerSelect(c,t.name)));
+  const gl=document.createElement('div');gl.className='field';const gs=document.createElement('span');gs.textContent='กลุ่มผู้ป่วย';gs.style.cssText='display:block;font-weight:600;font-size:15px;margin:0 0 4px';gl.append(gs,chips);
+  d.append(hd,g2,gl,
+   fld('อาการ / สภาพผู้ป่วย',ta(c.assess,2,v=>c.assess=v)),
+   fld('ข้อวินิจฉัยการพยาบาล',ta(c.dx,1,v=>c.dx=v)),
+   fld('แผนการพยาบาล / กิจกรรมวันนี้',ta(c.plan,2,v=>c.plan=v)),
+   fld('ประเมินผล / ติดตาม',ta(c.eval,1,v=>c.eval=v)));
+  box.append(d);});}
+
+function renderPeople(){const box=$('#people');box.innerHTML='';
+ TEAM.forEach(t=>{const p=S.people[t.id];
+  const det=document.createElement('details');det.className='person';
+  const sum=document.createElement('summary');const chev=document.createElement('span');chev.className='chev';chev.textContent='›';chev.setAttribute('aria-hidden','true');
+  const nm=document.createElement('span');nm.className='nm';nm.textContent=t.name;const badges=document.createElement('span');badges.style.cssText='display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end';
+  sum.append(chev,nm,badges);
+  const body=document.createElement('div');body.className='pbody';
+  const casesBox=document.createElement('div');casesBox.className='cases';
+  const add=document.createElement('button');add.type='button';add.className='btn small';add.textContent='+ เพิ่มผู้ป่วย';
+  add.onclick=()=>{p.cases.push({pt:'',group:'',assess:'',dx:'',plan:'',eval:'',owner:t.name});save();renderCases(t,casesBox);renderPeopleHeads();refresh();
+   const ins=casesBox.querySelectorAll('.case input');if(ins.length)ins[ins.length-1].focus();};
+  const ch=document.createElement('div');ch.className='field';const cs=document.createElement('span');cs.textContent='ผู้ป่วยที่ดูแลวันนี้';cs.style.cssText='display:block;font-weight:600;font-size:15px;margin:10px 0 4px';ch.append(cs,casesBox,add);
+  body.append(fld('งานที่จะทำวันนี้',ta(p.today,2,v=>p.today=v,'เช่น ออกเยี่ยมบ้าน ๓ ราย / คลินิก NCD ช่วงบ่าย')),ch,
+   fld('ปัญหาในการทำงาน',ta(p.problems,1,v=>p.problems=v)),
+   fld('ความคิดเห็น / แนวทางแก้ไข',ta(p.ideas,1,v=>p.ideas=v)),
+   fld('อื่น ๆ',ta(p.other,1,v=>p.other=v)));
+  det.append(sum,body);box.append(det);heads[t.id]={det,badges};renderCases(t,casesBox);});
+ renderPeopleHeads();}
+
+function refresh(){const present=TEAM.filter(t=>S.people[t.id].status==='มา').length;
+ $('#s-att').textContent=present+'/'+TEAM.length;
+ $('#s-pt').textContent=TEAM.reduce((a,t)=>a+S.people[t.id].cases.length,0);
+ renderPeopleHeads();}
+
+/* output */
+const TD='๐๑๒๓๔๕๖๗๘๙';
+function digits(s){return S.thai?s.replace(/\d/g,d=>TD[d]):s;}
+function line(label,v,ind){v=(v||'').trim();if(!v)return '';const pad=ind||'';
+ const parts=v.split('\n');return pad+label+': '+parts[0]+(parts.length>1?'\n'+parts.slice(1).map(x=>pad+'   '+x).join('\n'):'')+'\n';}
+function build(){let o='';
+ o+='📋 Morning Brief กลุ่มงานการพยาบาลชุมชน\n';
+ o+=thaiDate(S.date)+(S.time?' เวลา '+S.time.replace(':','.')+' น.':'')+'\n';
+ if(S.recorder.trim())o+='ผู้บันทึก: '+S.recorder.trim()+'\n';
+ const present=TEAM.filter(t=>S.people[t.id].status==='มา');
+ const away=TEAM.filter(t=>S.people[t.id].status!=='มา');
+ o+='มาปฏิบัติงาน '+present.length+'/'+TEAM.length+' คน\n';
+ STATUS.slice(1).forEach(st=>{const g=away.filter(t=>S.people[t.id].status===st);if(g.length)o+=(st==='ราชการ'?'ไปราชการ/อบรม':st)+': '+g.map(t=>t.name).join(', ')+'\n';});
+ const total=TEAM.reduce((a,t)=>a+S.people[t.id].cases.length,0);
+ o+='ผู้ป่วยที่ดูแลวันนี้รวม '+total+' ราย\n';
+ const tm=S.team;let tb='';
+ tb+=line('เรื่องจากหัวหน้า/ภาพรวม',tm.chief);tb+=line('ปัญหาของทีม',tm.problems);tb+=line('แนวทางแก้ไข/ข้อตกลง',tm.agree);
+ tm.extras.forEach(x=>{if((x.title||'').trim()||(x.detail||'').trim())tb+=line((x.title||'หัวข้อเพิ่มเติม').trim(),x.detail||'-');});
+ tb+=line('อื่น ๆ',tm.other);
+ o+='\n【ภาพรวมทีม】\n'+(tb||'ไม่มีเรื่องเพิ่มเติม\n');
+ TEAM.forEach(t=>{const p=S.people[t.id];
+  o+='\n【'+t.name+'】';
+  if(p.status!=='มา'){o+=' ('+(p.status==='ราชการ'?'ไปราชการ/อบรม':p.status)+')\n';if(!personFilled(p))return;}else o+='\n';
+  let b='';b+=line('งานวันนี้',p.today);
+  if(p.cases.length){b+='ผู้ป่วย '+p.cases.length+' ราย\n';
+   p.cases.forEach((c,i)=>{const head=' '+(i+1)+') '+((c.pt||'').trim()||'ผู้ป่วย')+(c.group?' ['+c.group+']':'');
+    b+=head+'\n';
+    if(c.owner&&c.owner!==t.name)b+='    ผู้รับผิดชอบ: '+c.owner+'\n';
+    b+=line('อาการ',c.assess,'    ');b+=line('ข้อวินิจฉัยการพยาบาล',c.dx,'    ');b+=line('แผนการพยาบาล',c.plan,'    ');b+=line('ประเมินผล/ติดตาม',c.eval,'    ');});}
+  b+=line('ปัญหาในงาน',p.problems);b+=line('ความคิดเห็น/แนวทางแก้ไข',p.ideas);b+=line('อื่น ๆ',p.other);
+  o+=b||'ไม่มีรายงานเพิ่มเติม\n';});
+ return digits(o.trim());}
+
+const dlg=$('#dlg');
+$('#open').onclick=()=>{$('#out').value=build();if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','');};
+$('#close').onclick=()=>dlg.close?dlg.close():dlg.removeAttribute('open');
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
+$('#copy').onclick=async()=>{const v=$('#out').value;
+ try{await navigator.clipboard.writeText(v);toast('คัดลอกแล้ว เปิดไลน์แล้ววางได้เลย');}
+ catch(e){const o=$('#out');o.focus();o.select();try{document.execCommand('copy');toast('คัดลอกแล้ว เปิดไลน์แล้ววางได้เลย');}catch(_){toast('คัดลอกไม่สำเร็จ กดค้างที่ข้อความแล้วเลือกคัดลอก');}}};
+if(navigator.share&&!HOSTED){const sb=$('#share');sb.hidden=false;sb.onclick=async()=>{try{await navigator.share({text:$('#out').value});}catch(e){}};}
+
+let resetArmed=null;const resetLbl=$('#reset').textContent;
+$('#reset').onclick=()=>{const b=$('#reset');
+ if(!resetArmed){b.textContent='แตะอีกครั้งเพื่อยืนยัน ข้อมูลวันนี้จะหายทั้งหมด';b.classList.add('solid-danger');
+  resetArmed=setTimeout(()=>{resetArmed=null;b.textContent=resetLbl;b.classList.remove('solid-danger');},4000);return;}
+ clearTimeout(resetArmed);resetArmed=null;b.textContent=resetLbl;b.classList.remove('solid-danger');
+ const keep={recorder:S.recorder,thai:S.thai,time:S.time};S=blank();Object.assign(S,keep);
+ try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}
+ $('#date').value=S.date;document.querySelectorAll('[data-team]').forEach(t=>{t.value='';autoGrow(t);});
+ renderExtras();renderAtt();renderPeople();refresh();headline();window.scrollTo(0,0);toast('เริ่มรายงานวันใหม่แล้ว');};
+
+headline();renderAtt();renderPeople();refresh();
+})();
+</script>
+</body>
+</html>
