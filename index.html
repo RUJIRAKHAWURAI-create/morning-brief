@@ -133,6 +133,7 @@ html:not(.hosted) .web-only,.hosted .local-only,html:not(.web) .link-only{displa
     <div class="meta">
       <div><label for="date">วันที่</label><input type="date" id="date"></div>
       <div><label for="time">เวลาเริ่ม</label><input type="time" id="time"></div>
+      <div style="grid-column:1/-1"><label for="chair">ประธาน Morning Brief วันนี้</label><select id="chair"></select></div>
       <div style="grid-column:1/-1"><label for="recorder">ผู้บันทึกวันนี้</label><select id="recorder"></select></div>
     </div>
   </header>
@@ -141,7 +142,7 @@ html:not(.hosted) .web-only,.hosted .local-only,html:not(.web) .link-only{displa
     <summary>วิธีใช้ (อ่านครั้งแรก)</summary>
     <ol>
       <li class="link-only"><b>เปิดลิงก์ด้วย Safari (iPhone) หรือ Chrome (Android)</b> อย่าเปิดในไลน์ เพราะข้อมูลที่กรอกอาจหาย แล้วเพิ่มไว้ที่หน้าจอโฮม จะได้เปิดทางเดียวกันทุกวัน</li>
-      <li>เลือก <b>ผู้บันทึกวันนี้</b> และเช็กวันที่ ถ้ามีข้อมูลของวันก่อนค้าง กด "ล้างข้อมูล เริ่มรายงานวันใหม่" ที่ส่วนตั้งค่าล่างสุด</li>
+      <li>เลือก <b>ประธาน</b> และ <b>ผู้บันทึกวันนี้</b> และเช็กวันที่ ถ้ามีข้อมูลของวันก่อนค้าง กด "ล้างข้อมูล เริ่มรายงานวันใหม่" ที่ส่วนตั้งค่าล่างสุด</li>
       <li class="local-only">ถ้าจะอัดเสียง แจ้งทีมก่อน แล้วกด <b>● เริ่มอัดเสียง</b> กดหยุดเมื่อประชุมจบ ไฟล์เสียงจะลงโฟลเดอร์ Downloads (iPhone ดูในแอป ไฟล์)</li>
       <li class="web-only">ถ้าจะอัดเสียง แจ้งทีมก่อน แล้วใช้แอปอัดเสียงของมือถือ (iPhone: <b>บันทึกเสียง/Voice Memos</b>, Android: <b>เครื่องบันทึกเสียง</b>) อัดไว้ฟังทวน</li>
       <li class="local-only">กรอก การมาปฏิบัติงาน → ภาพรวมทีม → รายคน (แตะชื่อเพื่อเปิด) ช่องไหนพูดแทนพิมพ์ได้ กด <b>🎤 พูด</b></li>
@@ -169,6 +170,7 @@ html:not(.hosted) .web-only,.hosted .local-only,html:not(.web) .link-only{displa
   <section class="block" aria-labelledby="team-h">
     <h2 id="team-h">ภาพรวมทีม</h2>
     <p class="hint">เรื่องของกลุ่มงานทั้งหมด แยกจากรายงานรายบุคคล</p>
+    <label class="field"><span>เรื่องที่ประธานแจ้ง</span><textarea data-team="chairNote" rows="2"></textarea></label>
     <label class="field"><span>เรื่องจากหัวหน้า / ภาพรวมกลุ่มงาน</span><textarea data-team="chief" rows="2"></textarea></label>
     <label class="field"><span>ปัญหาของทีม</span><textarea data-team="problems" rows="2"></textarea></label>
     <label class="field"><span>แนวทางแก้ไข / ข้อตกลงร่วมกัน</span><textarea data-team="agree" rows="2"></textarea></label>
@@ -239,12 +241,13 @@ const $=s=>document.querySelector(s);
 function today(){const d=new Date();const z=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate());}
 function blankPerson(){return {status:'มา',today:'',cases:[],problems:'',ideas:'',other:''};}
 function blank(){const p={};TEAM.forEach(t=>p[t.id]=blankPerson());
- return {date:today(),time:'08:30',recorder:'',thai:false,
-  team:{chief:'',problems:'',agree:'',other:'',extras:[]},people:p};}
+ return {date:today(),time:'08:30',chair:'',recorder:'',thai:false,
+  team:{chairNote:'',chief:'',problems:'',agree:'',other:'',extras:[]},people:p};}
 let S;
 try{const raw=localStorage.getItem(KEY);S=raw?JSON.parse(raw):null;}catch(e){S=null;}
 if(!S||!S.people){S=blank();}
 TEAM.forEach(t=>{if(!S.people[t.id])S.people[t.id]=blankPerson();});
+if(typeof S.chair!=='string')S.chair='';if(typeof S.team.chairNote!=='string')S.team.chairNote='';
 let saveT;
 function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}},250);}
 
@@ -284,14 +287,15 @@ function toggleDictation(el,b){const same=recEl===el;stopDictation();if(same)ret
  try{r.start();}catch(e){stopDictation();toast('เปิดไมโครโฟนไม่สำเร็จ');}}
 
 /* meta */
-$('#date').value=S.date;$('#time').value=S.time;fillRecorder();$('#thai').checked=!!S.thai;
+$('#date').value=S.date;$('#time').value=S.time;fillPerson('#chair','chair','— เลือกชื่อประธาน —');fillPerson('#recorder','recorder','— เลือกชื่อผู้บันทึก —');$('#thai').checked=!!S.thai;
 $('#date').addEventListener('input',e=>{S.date=e.target.value;headline();save();});
 $('#time').addEventListener('input',e=>{S.time=e.target.value;save();});
 $('#recorder').addEventListener('change',e=>{S.recorder=e.target.value;save();});
-function fillRecorder(){const sel=$('#recorder');sel.innerHTML='';
- const names=TEAM.map(t=>t.name);if(S.recorder&&!names.includes(S.recorder))names.push(S.recorder);
- [['','— เลือกชื่อผู้บันทึก —']].concat(names.map(n=>[n,n])).forEach(([v,l])=>{const o=document.createElement('option');o.value=v;o.textContent=l;sel.append(o);});
- sel.value=S.recorder||'';}
+$('#chair').addEventListener('change',e=>{S.chair=e.target.value;save();});
+function fillPerson(selId,key,ph){const sel=$(selId);sel.innerHTML='';
+ const names=TEAM.map(t=>t.name);if(S[key]&&!names.includes(S[key]))names.push(S[key]);
+ [['',ph]].concat(names.map(n=>[n,n])).forEach(([v,l])=>{const o=document.createElement('option');o.value=v;o.textContent=l;sel.append(o);});
+ sel.value=S[key]||'';}
 $('#thai').addEventListener('change',e=>{S.thai=e.target.checked;save();});
 
 /* team */
@@ -423,6 +427,7 @@ function line(label,v,ind){v=(v||'').trim();if(!v)return '';const pad=ind||'';
 function build(){let o='';
  o+='📋 Morning Brief กลุ่มงานการพยาบาลชุมชน\n';
  o+=thaiDate(S.date)+(S.time?' เวลา '+S.time.replace(':','.')+' น.':'')+'\n';
+ if((S.chair||'').trim())o+='ประธาน: '+S.chair.trim()+'\n';
  if(S.recorder.trim())o+='ผู้บันทึก: '+S.recorder.trim()+'\n';
  const present=TEAM.filter(t=>S.people[t.id].status==='มา');
  const away=TEAM.filter(t=>S.people[t.id].status!=='มา');
@@ -431,7 +436,7 @@ function build(){let o='';
  const total=TEAM.reduce((a,t)=>a+S.people[t.id].cases.length,0);
  o+='ผู้ป่วยที่ดูแลวันนี้รวม '+total+' ราย\n';
  const tm=S.team;let tb='';
- tb+=line('เรื่องจากหัวหน้า/ภาพรวม',tm.chief);tb+=line('ปัญหาของทีม',tm.problems);tb+=line('แนวทางแก้ไข/ข้อตกลง',tm.agree);
+ tb+=line('เรื่องที่ประธานแจ้ง',tm.chairNote);tb+=line('เรื่องจากหัวหน้า/ภาพรวม',tm.chief);tb+=line('ปัญหาของทีม',tm.problems);tb+=line('แนวทางแก้ไข/ข้อตกลง',tm.agree);
  tm.extras.forEach(x=>{if((x.title||'').trim()||(x.detail||'').trim())tb+=line((x.title||'หัวข้อเพิ่มเติม').trim(),x.detail||'-');});
  tb+=line('อื่น ๆ',tm.other);
  o+='\n【ภาพรวมทีม】\n'+(tb||'ไม่มีเรื่องเพิ่มเติม\n');
@@ -464,7 +469,7 @@ $('#reset').onclick=()=>{const b=$('#reset');
  clearTimeout(resetArmed);resetArmed=null;b.textContent=resetLbl;b.classList.remove('solid-danger');
  const keep={recorder:S.recorder,thai:S.thai,time:S.time};S=blank();Object.assign(S,keep);
  try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}
- $('#date').value=S.date;document.querySelectorAll('[data-team]').forEach(t=>{t.value='';autoGrow(t);});
+ $('#date').value=S.date;$('#chair').value='';document.querySelectorAll('[data-team]').forEach(t=>{t.value='';autoGrow(t);});
  renderExtras();renderAtt();renderPeople();refresh();headline();window.scrollTo(0,0);toast('เริ่มรายงานวันใหม่แล้ว');};
 
 headline();renderAtt();renderPeople();refresh();
