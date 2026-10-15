@@ -233,6 +233,8 @@ const TEAM=[
  {id:'rattikan',name:'คุณรัฏติกาล',role:'พยาบาล'},
  {id:'chanikan',name:'คุณชนิกานต์',role:'พยาบาล'}
 ];
+/* people who take turns chairing Morning Brief (chair-only names are not team members) */
+const CHAIRS=[TEAM.find(t=>t.id==='kanchana').name,'คุณวสุชา','คุณปาริชาต','คุณพันทะนันท์'];
 const GROUPS=['Home Ward','Palliative','NCD','FCT','อื่น ๆ'];
 const STATUS=['มา','ลา','ราชการ'];
 const KEY='mb-community-nursing-v1';
@@ -287,13 +289,13 @@ function toggleDictation(el,b){const same=recEl===el;stopDictation();if(same)ret
  try{r.start();}catch(e){stopDictation();toast('เปิดไมโครโฟนไม่สำเร็จ');}}
 
 /* meta */
-$('#date').value=S.date;$('#time').value=S.time;fillPerson('#chair','chair','— เลือกชื่อประธาน —');fillPerson('#recorder','recorder','— เลือกชื่อผู้บันทึก —');$('#thai').checked=!!S.thai;
+$('#date').value=S.date;$('#time').value=S.time;fillPerson('#chair','chair','— เลือกชื่อประธาน —',CHAIRS);fillPerson('#recorder','recorder','— เลือกชื่อผู้บันทึก —',TEAM.map(t=>t.name));$('#thai').checked=!!S.thai;
 $('#date').addEventListener('input',e=>{S.date=e.target.value;headline();save();});
 $('#time').addEventListener('input',e=>{S.time=e.target.value;save();});
 $('#recorder').addEventListener('change',e=>{S.recorder=e.target.value;save();});
 $('#chair').addEventListener('change',e=>{S.chair=e.target.value;save();});
-function fillPerson(selId,key,ph){const sel=$(selId);sel.innerHTML='';
- const names=TEAM.map(t=>t.name);if(S[key]&&!names.includes(S[key]))names.push(S[key]);
+function fillPerson(selId,key,ph,list){const sel=$(selId);sel.innerHTML='';
+ const names=list.slice();if(S[key]&&!names.includes(S[key]))names.push(S[key]);
  [['',ph]].concat(names.map(n=>[n,n])).forEach(([v,l])=>{const o=document.createElement('option');o.value=v;o.textContent=l;sel.append(o);});
  sel.value=S[key]||'';}
 $('#thai').addEventListener('change',e=>{S.thai=e.target.checked;save();});
